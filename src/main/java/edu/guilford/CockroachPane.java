@@ -40,6 +40,7 @@ public class CockroachPane extends GridPane{
         startButton = new Button("Start");        
 
         File roach = new File(this.getClass().getResource("cover1.jpg").getPath());
+        System.out.println(roach);
 
         //step 2: instantiate the imageview attribute with the image of the roach from the roach file
         roachView = new ImageView(roach.toURI().toString());
@@ -63,10 +64,19 @@ public class CockroachPane extends GridPane{
         this.setStyle("-fx-background-color: #f4a460;");
 
         submitButton.setOnAction(e -> {
-            // set the name
-            cockroach.setName(cockroachName.getText());
-            // update the label
-            cockroachNameLabel.setText("Cockroach Name: " + cockroach.getName());            
+            try{
+                if(cockroachName.getText().length() > 50){
+                    cockroachNameLabel.setText("NAME IS TOO LONG TRY AGAIN | Cockroach Name: " + cockroach.getName());
+                    throw new TextLengthException("Name is too long");
+                } else if (cockroachName.getText().length() <= 50) {// set the name
+                    cockroach.setName(cockroachName.getText());
+                    // update the label
+                    cockroachNameLabel.setText("Cockroach Name: " + cockroach.getName());   
+                }
+            } catch (Exception ex) {
+                System.out.println("Error: " + ex.getMessage());
+            }
+  
         });
 
         //add a listener for the start button that makes all the labels and textfields disappear when pressed
@@ -101,9 +111,18 @@ public class CockroachPane extends GridPane{
         roachView.setOnMouseClicked(e -> {
             roachView.setScaleX(-1 * roachView.getScaleX());
             //change the background to a random color every time the roach is clicked
-            this.setStyle("-fx-background-color: #" + Integer.toHexString((int)(Math.random() * 16777215)));
+            //this.setStyle("-fx-background-color: #" + Integer.toHexString((int)(Math.random() * 16777215)));   
+               try {
+                int randomInt = (int) (Math.random() * (16777216)); // Generate a random integer between 0 and 16777215 (inclusive)
+                if (randomInt < 1048576) {
+                    throw new BadNumberException("Generated number is greater than 1048576");
+                }
+                this.setStyle("-fx-background-color: #" + Integer.toHexString(randomInt)); 
+                // Use the generated number here
+            } catch (Exception ex) {
+                System.out.println("Error: " + ex.getMessage());
+            }
 
-            
         });
 
         //add context menu to the roach
@@ -119,6 +138,19 @@ public class CockroachPane extends GridPane{
         roachView.setOnContextMenuRequested(e -> contextMenu.show(submitButton, e.getScreenX(), e.getScreenY()));
        
         
+    }
+
+   
+    private static class BadNumberException extends Exception {
+        public BadNumberException(String message) {
+            super(message);    
+        }
+    }
+
+    private static class TextLengthException extends Exception {
+        public TextLengthException(String message) {
+            super(message);    
+        }
     }
 
     //add a listener for the submit button that changes the labels when pressed

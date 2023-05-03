@@ -1,0 +1,5 @@
+The program may crash or slow down if to many characters are put into the textbox and submitted. 
+After the name of the cockroach is changed, the start button and the flipping of the image will slow down.
+
+Sometimes, when the image is clicked and the background color is changed, due to how the color is generated, 
+a hexadecimal that is generated when the image is clicked might not be a valid hexadecimal for background colors.
